@@ -1,6 +1,7 @@
 package com.twoweeksmc.lobbyserver;
 
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
+import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
 import com.twoweeksmc.lobbyserver.inventory.NavigatorInventory;
 import com.twoweeksmc.lobbyserver.listener.*;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
@@ -21,6 +22,7 @@ public class Lobbyserver {
     private final JLineConsole console;
     private final JsonConfig serverConfiguration;
     private final JsonConfig databaseConfiguration;
+    private final MongoDatabaseProcessor databaseProcessor;
     private final MinecraftServer minecraftServer;
     private final GlobalEventHandler globalEventHandler;
     private final InstanceManager instanceManager;
@@ -41,12 +43,12 @@ public class Lobbyserver {
         this.console.print("Configured server configuration.");
         this.console.print("Configuring database configuration...");
         this.databaseConfiguration = new JsonConfig(".", "database.json");
-        this.databaseConfiguration.addDefault("host", "127.0.0.1");
-        this.databaseConfiguration.addDefault("port", 27017);
+        this.databaseConfiguration.addDefault("url", "mongodb-url");
         this.databaseConfiguration.addDefault("database", "database");
-        this.databaseConfiguration.addDefault("username", "root");
-        this.databaseConfiguration.addDefault("password", "password");
         this.console.print("Configured database configuration...");
+        this.console.print("Initializing database...");
+        this.databaseProcessor = new MongoDatabaseProcessor(this.databaseConfiguration);
+        this.console.print("Initialized database.");
         this.console.print("Configuring minecraft server...");
         this.minecraftServer = MinecraftServer.init();
         MinecraftServer.setDifficulty(Difficulty.PEACEFUL);
@@ -77,7 +79,7 @@ public class Lobbyserver {
     public void registerEvents() {
         EventRegister eventRegister = new EventRegister(this.globalEventHandler);
         eventRegister.register(new InventoryPreClickListener(this.navigatorInventory).listen());
-        eventRegister.register(new PlayerConfigurationListener(this.lobbyInstance).listen());
+        eventRegister.register(new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor).listen());
         eventRegister.register(new PlayerUseItemListener(this.navigatorInventory).listen());
         eventRegister.register(new PlayerSpawnListener().listen());
         eventRegister.register(new PlayerBlockBreakListener().listen());
