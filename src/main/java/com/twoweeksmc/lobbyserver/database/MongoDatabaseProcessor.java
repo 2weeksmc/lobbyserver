@@ -8,6 +8,7 @@ import com.mongodb.client.model.Filters;
 import de.eztxm.config.JsonConfig;
 import org.bson.Document;
 
+import java.time.Instant;
 import java.util.UUID;
 
 public class MongoDatabaseProcessor {
@@ -32,10 +33,16 @@ public class MongoDatabaseProcessor {
         Document document = new Document();
         document.put("uuid", uuid.toString());
         document.put("gems", 50);
+        document.put("last-server-end", null);
+        document.put("server", null);
         return this.playerCollection.insertOne(document).wasAcknowledged();
     }
 
     public Document getPlayer(UUID uuid) {
         return this.playerCollection.find(Filters.eq("uuid", uuid.toString())).first();
+    }
+
+    public MongoClient getMongoClient() {
+        return mongoClient;
     }
 }

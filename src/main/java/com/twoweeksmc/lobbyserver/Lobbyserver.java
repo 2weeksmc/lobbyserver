@@ -2,7 +2,6 @@ package com.twoweeksmc.lobbyserver;
 
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
-import com.twoweeksmc.lobbyserver.inventory.NavigatorInventory;
 import com.twoweeksmc.lobbyserver.listener.*;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
 import de.eztxm.config.JsonConfig;
@@ -13,12 +12,12 @@ import net.minestom.server.instance.InstanceContainer;
 import net.minestom.server.instance.InstanceManager;
 import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.anvil.AnvilLoader;
-import net.minestom.server.inventory.Inventory;
 import net.minestom.server.world.Difficulty;
 
 import java.io.IOException;
 
 public class Lobbyserver {
+    private static Lobbyserver instance;
     private final JLineConsole console;
     private final JsonConfig serverConfiguration;
     private final JsonConfig databaseConfiguration;
@@ -27,13 +26,16 @@ public class Lobbyserver {
     private final GlobalEventHandler globalEventHandler;
     private final InstanceManager instanceManager;
     private final InstanceContainer lobbyInstance;
-    private final Inventory navigatorInventory;
 
     public static void main(String[] args) throws IOException {
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close();
+        }));
         new Lobbyserver();
     }
 
     public Lobbyserver() throws IOException {
+        instance = this;
         this.console = new JLineConsole();
         this.console.print("Starting Lobbyserver...");
         this.console.print("Configuring server configuration...");
@@ -65,9 +67,6 @@ public class Lobbyserver {
         this.lobbyInstance.setTimeRate(0);
         this.lobbyInstance.setTime(6000);
         this.console.print("Initialized worlds.");
-        this.console.print("Initializing inventories...");
-        this.navigatorInventory = new NavigatorInventory();
-        this.console.print("Initialized inventories.");
         this.console.print("Registering event listeners...");
         this.registerEvents();
         this.console.print("Registered event listeners.");
@@ -85,5 +84,13 @@ public class Lobbyserver {
         eventRegister.register(new PlayerBlockBreakListener().listen());
         eventRegister.register(new PlayerBlockPlaceListener().listen());
         eventRegister.register(new ItemDropListener().listen());
+    }
+
+    public MongoDatabaseProcessor getDatabaseProcessor() {
+        return databaseProcessor;
+    }
+
+    public static Lobbyserver getInstance() {
+        return instance;
     }
 }
