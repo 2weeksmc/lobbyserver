@@ -60,7 +60,8 @@ public class Lobbyserver {
         this.lobbyInstance = this.instanceManager.createInstanceContainer();
         this.lobbyInstance.setChunkLoader(new AnvilLoader("worlds/SMP-Startinsel"));
         this.lobbyInstance.setChunkSupplier(LightingChunk::new);
-        this.instanceManager.registerInstance(this.lobbyInstance);
+        this.lobbyInstance.setTimeRate(0);
+        this.lobbyInstance.setTime(6000);
         this.console.print("Initialized worlds.");
         this.console.print("Initializing inventories...");
         this.navigatorInventory = new NavigatorInventory();
