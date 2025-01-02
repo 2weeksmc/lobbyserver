@@ -37,8 +37,11 @@ public final class JLineConsole {
         this.terminal.enterRawMode();
         this.reader = (LineReaderImpl) LineReaderBuilder.builder()
                 .terminal(this.terminal)
+                .completer(new JLineCompleter())
                 .option(LineReader.Option.DISABLE_EVENT_EXPANSION, true)
                 .option(LineReader.Option.AUTO_PARAM_SLASH, false)
+                .variable(LineReader.COMPLETION_STYLE_LIST_SELECTION, "fg:cyan")
+                .variable(LineReader.COMPLETION_STYLE_LIST_BACKGROUND, "bg:default")
                 .build();
         AttributedString coloredPrefix = new AttributedString(this.userPrefix());
         this.reader.setPrompt(coloredPrefix.toAnsi());

@@ -39,3 +39,4 @@ build/
 worlds/
 server.json
 database.json
+*.jar
