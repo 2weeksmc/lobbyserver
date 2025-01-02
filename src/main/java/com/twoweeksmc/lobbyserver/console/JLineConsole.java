@@ -4,9 +4,7 @@ import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.UUID;
 
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
@@ -17,9 +15,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.InfoCmp;
 
-import com.twoweeksmc.lobbyserver.Lobbyserver;
-import com.twoweeksmc.lobbyserver.server.Server;
-import com.twoweeksmc.lobbyserver.server.ServerTemplate;
+import com.twoweeksmc.lobbyserver.console.command.CreateServerCommand;
 
 public final class JLineConsole {
     private final Terminal terminal;
@@ -65,42 +61,7 @@ public final class JLineConsole {
                 switch (command) {
                     case "clear" -> this.clear();
                     case "create" -> {
-                        if (args.length < 1) {
-                            this.print("Usage: create server <method> <options...>");
-                            continue;
-                        }
-                        switch (args[0].toLowerCase()) {
-                            case "server" -> {
-                                if (args.length < 2) {
-                                    this.print("Usage: create server <method> <options...>");
-                                    continue;
-                                }
-                                if (args[1].equalsIgnoreCase("template")) {
-                                    if (args.length < 3) {
-                                        this.print("Usage: create server template <template>");
-                                        continue;
-                                    }
-                                    Lobbyserver.getInstance().getDatabaseProcessor().addServer(
-                                            UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
-                                            Server.getFromTemplate(ServerTemplate.valueOf(args[2].toUpperCase())));
-                                    continue;
-                                }
-                                if (args[1].equalsIgnoreCase("custom")) {
-                                    if (args.length < 5) {
-                                        this.print("Usage: create server custom <options...>");
-                                        continue;
-                                    }
-                                    Lobbyserver.getInstance().getDatabaseProcessor().addServer(
-                                            UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
-                                            new Server(0, 0, 0, new ArrayList<>()));
-                                    continue;
-                                }
-                                this.print("Usage: create server <method> <options...>");
-                            }
-                            default -> {
-                                this.print("Usage: create server <method> <options...>");
-                            }
-                        }
+                        new CreateServerCommand(this).execute(args);
                     }
                     case "exit", "stop", "shutdown" -> {
                         this.isRunning = false;
@@ -123,6 +84,7 @@ public final class JLineConsole {
         }
         this.print("Stopped server.");
         System.exit(0);
+
     }
 
     public String prefix() {

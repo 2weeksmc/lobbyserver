@@ -3,20 +3,29 @@ package com.twoweeksmc.lobbyserver.server;
 import java.util.List;
 
 public class Server {
+    private final int gemsPrice;
     private final int weeks;
+    private final int cooldownWeeks;
     private final int maxPlayers;
     private final int maxMemory;
     private final List<String> plugins;
 
-    public Server(int weeks, int maxPlayers, int maxMemory, List<String> plugins) {
+    public Server(int gemsPrice, int weeks, int cooldownWeeks, int maxPlayers, int maxMemory, List<String> plugins) {
+        this.gemsPrice = gemsPrice;
         this.weeks = weeks;
+        this.cooldownWeeks = cooldownWeeks;
         this.maxPlayers = maxPlayers;
         this.maxMemory = maxMemory;
         this.plugins = plugins;
     }
 
+    public void start() {
+        // TODO: integration of servermanager api to start a server
+    }
+
     public static Server getFromTemplate(ServerTemplate template) {
-        return new Server(template.getWeeks(), template.getMaxPlayers(), template.getMaxMemory(),
+        return new Server(template.getGemsPrice(), template.getWeeks(), template.getCooldownWeeks(),
+                template.getMaxPlayers(), template.getMaxMemory(),
                 template.getPlugins());
     }
 
@@ -32,7 +41,15 @@ public class Server {
         return maxPlayers;
     }
 
+    public int getCooldownWeeks() {
+        return cooldownWeeks;
+    }
+
     public int getWeeks() {
         return weeks;
+    }
+
+    public int getGemsPrice() {
+        return gemsPrice;
     }
 }
