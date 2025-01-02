@@ -102,6 +102,8 @@ public final class JLineConsole {
                     case "help" -> {
                         this.print("&7-------------------------------&eHelp&7-------------------------------");
                         this.print(" &eclear &7- &fClear the console.");
+                        this.print(" &ecreate server custom <options...> &7- &fCreate a custom server.");
+                        this.print(" &ecreate server template <template>, &7- &fCreate a template-based server");
                         this.print(" &eexit, shutdown, stop &7- &fShutdown the cloud.");
                         this.print(" &ehelp &7- &fShow this help menu.");
                         this.print("&7-------------------------------&eHelp&7-------------------------------");
