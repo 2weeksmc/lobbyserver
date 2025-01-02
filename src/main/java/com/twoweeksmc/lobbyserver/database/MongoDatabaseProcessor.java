@@ -1,5 +1,6 @@
 package com.twoweeksmc.lobbyserver.database;
 
+import java.time.Instant;
 import java.util.UUID;
 
 import org.bson.Document;
@@ -9,6 +10,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
+import com.twoweeksmc.lobbyserver.server.Server;
 
 import de.eztxm.config.JsonConfig;
 
@@ -27,6 +29,20 @@ public class MongoDatabaseProcessor {
         this.playerCollection = this.mongoDatabase.getCollection("players");
     }
 
+    public boolean addServer(UUID ownerId, Server server) {
+        if (this.getServer(ownerId) != null) {
+            return true;
+        }
+        Document document = new Document();
+        document.put("ownerId", ownerId);
+        document.put("start", Instant.now());
+        document.put("weeks", server.getWeeks());
+        document.put("max-players", server.getMaxPlayers());
+        document.put("max-memory", server.getMaxMemory());
+        document.put("plugins", server.getPlugins());
+        return this.serverCollection.insertOne(document).wasAcknowledged();
+    }
+
     public boolean addPlayer(UUID uuid) {
         if (this.getPlayer(uuid) != null) {
             return true;
@@ -41,6 +57,10 @@ public class MongoDatabaseProcessor {
 
     public Document getPlayer(UUID uuid) {
         return this.playerCollection.find(Filters.eq("uuid", uuid.toString())).first();
+    }
+
+    public Document getServer(UUID ownerId) {
+        return this.serverCollection.find(Filters.eq("ownerId", ownerId.toString())).first();
     }
 
     public MongoClient getMongoClient() {
