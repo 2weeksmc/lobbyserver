@@ -62,31 +62,35 @@ public final class JLineConsole {
                 switch (command) {
                     case "clear" -> this.clear();
                     case "create" -> {
+                        if (args.length < 1) {
+                            this.print("Usage: create server <method> <options...>");
+                            continue;
+                        }
                         switch (args[0].toLowerCase()) {
                             case "server" -> {
                                 if (args.length < 2) {
                                     this.print("Usage: create server <method> <options...>");
-                                    return;
+                                    continue;
                                 }
                                 if (args[1].equalsIgnoreCase("template")) {
                                     if (args.length < 3) {
                                         this.print("Usage: create server template <template>");
-                                        return;
+                                        continue;
                                     }
                                     Lobbyserver.getInstance().getDatabaseProcessor().addServer(
                                             UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
                                             Server.getFromTemplate(ServerTemplate.valueOf(args[2].toUpperCase())));
-                                    return;
+                                    continue;
                                 }
                                 if (args[1].equalsIgnoreCase("custom")) {
                                     if (args.length < 5) {
                                         this.print("Usage: create server custom <options...>");
-                                        return;
+                                        continue;
                                     }
                                     Lobbyserver.getInstance().getDatabaseProcessor().addServer(
                                             UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
                                             new Server(0, 0, 0, new ArrayList<>()));
-                                    return;
+                                    continue;
                                 }
                                 this.print("Usage: create server <method> <options...>");
                             }
