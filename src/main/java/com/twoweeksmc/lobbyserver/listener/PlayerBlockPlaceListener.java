@@ -1,11 +1,8 @@
 package com.twoweeksmc.lobbyserver.listener;
 
 import com.twoweeksmc.lobbyserver.util.DualResult;
-import net.minestom.server.event.GlobalEventHandler;
-import net.minestom.server.event.player.PlayerBlockBreakEvent;
-import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 
-import java.util.function.Consumer;
+import net.minestom.server.event.player.PlayerBlockPlaceEvent;
 
 public class PlayerBlockPlaceListener extends GenericListener<PlayerBlockPlaceEvent> {
 

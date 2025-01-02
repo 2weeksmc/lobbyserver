@@ -1,15 +1,16 @@
 package com.twoweeksmc.lobbyserver.database;
 
+import java.util.UUID;
+
+import org.bson.Document;
+
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import de.eztxm.config.JsonConfig;
-import org.bson.Document;
 
-import java.time.Instant;
-import java.util.UUID;
+import de.eztxm.config.JsonConfig;
 
 public class MongoDatabaseProcessor {
     private final JsonConfig databaseConfiguration;

@@ -1,5 +1,11 @@
 package com.twoweeksmc.lobbyserver.console;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -9,13 +15,7 @@ import org.jline.terminal.TerminalBuilder;
 import org.jline.utils.AttributedString;
 import org.jline.utils.InfoCmp;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-
-public class JLineConsole {
+public final class JLineConsole {
     private final Terminal terminal;
     private final LineReaderImpl reader;
 
@@ -88,7 +88,8 @@ public class JLineConsole {
             return ConsoleColor.apply("\r" + prefix);
 
         } catch (UnknownHostException e) {
-            return ConsoleColor.apply("\r" + "[FB1364-F9A608]2weeksmc&7@&e%hostname &7» &f".replace("%hostname", "unknown"));
+            return ConsoleColor
+                    .apply("\r" + "[FB1364-F9A608]2weeksmc&7@&e%hostname &7» &f".replace("%hostname", "unknown"));
         }
     }
 

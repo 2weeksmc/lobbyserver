@@ -1,9 +1,19 @@
 package com.twoweeksmc.lobbyserver;
 
+import java.io.IOException;
+
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
-import com.twoweeksmc.lobbyserver.listener.*;
+import com.twoweeksmc.lobbyserver.listener.InventoryPreClickListener;
+import com.twoweeksmc.lobbyserver.listener.ItemDropListener;
+import com.twoweeksmc.lobbyserver.listener.PlayerBlockBreakListener;
+import com.twoweeksmc.lobbyserver.listener.PlayerBlockPlaceListener;
+import com.twoweeksmc.lobbyserver.listener.PlayerConfigurationListener;
+import com.twoweeksmc.lobbyserver.listener.PlayerSpawnListener;
+import com.twoweeksmc.lobbyserver.listener.PlayerUseItemListener;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
+import com.twoweeksmc.lobbyserver.util.PlayerManager;
+
 import de.eztxm.config.JsonConfig;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
@@ -14,14 +24,13 @@ import net.minestom.server.instance.LightingChunk;
 import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.world.Difficulty;
 
-import java.io.IOException;
-
-public class Lobbyserver {
+public final class Lobbyserver {
     private static Lobbyserver instance;
     private final JLineConsole console;
     private final JsonConfig serverConfiguration;
     private final JsonConfig databaseConfiguration;
     private final MongoDatabaseProcessor databaseProcessor;
+    private final PlayerManager playerManager;
     private final MinecraftServer minecraftServer;
     private final GlobalEventHandler globalEventHandler;
     private final InstanceManager instanceManager;
@@ -51,6 +60,9 @@ public class Lobbyserver {
         this.console.print("Initializing database...");
         this.databaseProcessor = new MongoDatabaseProcessor(this.databaseConfiguration);
         this.console.print("Initialized database.");
+        this.console.print("Initializing playermanager...");
+        this.playerManager = new PlayerManager();
+        this.console.print("Initialized playermanager.");
         this.console.print("Configuring minecraft server...");
         this.minecraftServer = MinecraftServer.init();
         MinecraftServer.setDifficulty(Difficulty.PEACEFUL);
@@ -70,16 +82,19 @@ public class Lobbyserver {
         this.console.print("Registering event listeners...");
         this.registerEvents();
         this.console.print("Registered event listeners.");
-        this.minecraftServer.start(this.serverConfiguration.get("host").asString(), this.serverConfiguration.get("port").asInteger());
+        this.minecraftServer.start(this.serverConfiguration.get("host").asString(),
+                this.serverConfiguration.get("port").asInteger());
         this.console.print("Started lobbyserver.");
         this.console.start();
     }
 
     public void registerEvents() {
         EventRegister eventRegister = new EventRegister(this.globalEventHandler);
-        eventRegister.register(new InventoryPreClickListener(this.navigatorInventory).listen());
-        eventRegister.register(new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor).listen());
-        eventRegister.register(new PlayerUseItemListener(this.navigatorInventory).listen());
+        eventRegister.register(
+                new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor, this.playerManager)
+                        .listen());
+        eventRegister.register(new InventoryPreClickListener(this.playerManager).listen());
+        eventRegister.register(new PlayerUseItemListener(this.playerManager).listen());
         eventRegister.register(new PlayerSpawnListener().listen());
         eventRegister.register(new PlayerBlockBreakListener().listen());
         eventRegister.register(new PlayerBlockPlaceListener().listen());
