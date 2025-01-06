@@ -34,7 +34,7 @@ public class MongoDatabaseProcessor {
             return true;
         }
         Document document = new Document();
-        document.put("ownerId", ownerId);
+        document.put("ownerId", ownerId.toString());
         document.put("start", Instant.now());
         document.put("weeks", server.getWeeks());
         document.put("max-players", server.getMaxPlayers());
