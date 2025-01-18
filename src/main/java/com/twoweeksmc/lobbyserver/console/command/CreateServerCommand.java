@@ -45,7 +45,7 @@ public class CreateServerCommand {
                             Integer.parseInt(args[3]),
                             Integer.parseInt(args[4]), new ArrayList<>());
                     Lobbyserver.getInstance().getDatabaseProcessor().addServer(
-                            UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
+                            UUID.fromString("a0000a00-a00a-0a00-000a-aa00a000aa0a"),
                             server);
                     /*
                      * TODO: ServerManager createServerContainer with generated uniqueId in Lobbyserver while creating server for database.

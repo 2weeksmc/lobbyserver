@@ -100,7 +100,7 @@
         </dependency>
         <dependency>
             <groupId>com.twoweeksmc</groupId>
-            <artifactId>dms-common</artifactId>
+            <artifactId>dsm-common</artifactId>
             <version>1.0.0</version>
         </dependency>
     </dependencies>

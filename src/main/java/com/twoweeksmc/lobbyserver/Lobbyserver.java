@@ -2,7 +2,7 @@ package com.twoweeksmc.lobbyserver;
 
 import java.io.IOException;
 
-import com.twoweeksmc.dms.common.server.ServerManager;
+import com.twoweeksmc.dsm.common.server.ServerManager;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
 import com.twoweeksmc.lobbyserver.listener.InventoryPreClickListener;
@@ -61,6 +61,7 @@ public final class Lobbyserver {
         this.console.print("Configured database configuration...");
         this.console.print("Initializing servermanager...");
         this.serverManager = new ServerManager(11000, "E://Desktop//2weeksmc/dms-containers-pub");
+        this.serverManager.start();
         this.console.print("Initialized servermanager.");
         this.console.print("Initializing database...");
         this.databaseProcessor = new MongoDatabaseProcessor(this.databaseConfiguration);
