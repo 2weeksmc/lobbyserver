@@ -1,7 +1,5 @@
 package com.twoweeksmc.lobbyserver;
 
-import java.io.IOException;
-
 import com.twoweeksmc.dsm.common.server.ServerManager;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
@@ -14,8 +12,8 @@ import com.twoweeksmc.lobbyserver.listener.PlayerSpawnListener;
 import com.twoweeksmc.lobbyserver.listener.PlayerUseItemListener;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
 import com.twoweeksmc.lobbyserver.util.PlayerManager;
-
 import de.eztxm.config.JsonConfig;
+import java.io.IOException;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.extras.velocity.VelocityProxy;
@@ -26,6 +24,7 @@ import net.minestom.server.instance.anvil.AnvilLoader;
 import net.minestom.server.world.Difficulty;
 
 public final class Lobbyserver {
+
     private static Lobbyserver instance;
     private final JLineConsole console;
     private final JsonConfig serverConfiguration;
@@ -39,9 +38,12 @@ public final class Lobbyserver {
     private final InstanceContainer lobbyInstance;
 
     public static void main(String[] args) throws IOException {
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close();
-        }));
+        Runtime.getRuntime()
+            .addShutdownHook(
+                new Thread(() -> {
+                    Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close();
+                })
+            );
         new Lobbyserver();
     }
 
@@ -60,7 +62,7 @@ public final class Lobbyserver {
         this.databaseConfiguration.addDefault("database", "database");
         this.console.print("Configured database configuration...");
         this.console.print("Initializing servermanager...");
-        this.serverManager = new ServerManager(11000, "E://Desktop//2weeksmc/dms-containers-pub");
+        this.serverManager = new ServerManager(11000, "/home/eztxmmc/2weeksmc/dsm-containers-pub");
         this.serverManager.start();
         this.console.print("Initialized servermanager.");
         this.console.print("Initializing database...");
@@ -88,8 +90,10 @@ public final class Lobbyserver {
         this.console.print("Registering event listeners...");
         this.registerEvents();
         this.console.print("Registered event listeners.");
-        this.minecraftServer.start(this.serverConfiguration.get("host").asString(),
-                this.serverConfiguration.get("port").asInteger());
+        this.minecraftServer.start(
+                this.serverConfiguration.get("host").asString(),
+                this.serverConfiguration.get("port").asInteger()
+            );
         this.console.print("Started lobbyserver.");
         this.console.start();
     }
@@ -97,8 +101,8 @@ public final class Lobbyserver {
     public void registerEvents() {
         EventRegister eventRegister = new EventRegister(this.globalEventHandler);
         eventRegister.register(
-                new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor, this.playerManager)
-                        .listen());
+            new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor, this.playerManager).listen()
+        );
         eventRegister.register(new InventoryPreClickListener(this.playerManager).listen());
         eventRegister.register(new PlayerUseItemListener(this.playerManager).listen());
         eventRegister.register(new PlayerSpawnListener().listen());
