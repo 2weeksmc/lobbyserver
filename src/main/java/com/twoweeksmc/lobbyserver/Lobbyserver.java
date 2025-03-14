@@ -1,6 +1,6 @@
 package com.twoweeksmc.lobbyserver;
 
-import com.twoweeksmc.dsm.common.server.ServerManager;
+import de.eztxm.dsm.common.server.manager.ServerManager;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
 import com.twoweeksmc.lobbyserver.listener.InventoryPreClickListener;
@@ -40,9 +40,7 @@ public final class Lobbyserver {
     public static void main(String[] args) throws IOException {
         Runtime.getRuntime()
             .addShutdownHook(
-                new Thread(() -> {
-                    Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close();
-                })
+                new Thread(() -> Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close())
             );
         new Lobbyserver();
     }
@@ -62,7 +60,7 @@ public final class Lobbyserver {
         this.databaseConfiguration.addDefault("database", "database");
         this.console.print("Configured database configuration...");
         this.console.print("Initializing servermanager...");
-        this.serverManager = new ServerManager(11000, "/home/eztxmmc/2weeksmc/dsm-containers-pub");
+        this.serverManager = new ServerManager("2weeksmc-server", 11000, "/home/eztxmmc/2weeksmc/dsm-containers-pub");
         this.serverManager.start();
         this.console.print("Initialized servermanager.");
         this.console.print("Initializing database...");
