@@ -71,7 +71,7 @@
         <dependency>
             <groupId>net.minestom</groupId>
             <artifactId>minestom-snapshots</artifactId>
-            <version>0366b58bfe</version>
+            <version>7320437640</version>
         </dependency>
         <dependency>
             <groupId>net.kyori</groupId>
