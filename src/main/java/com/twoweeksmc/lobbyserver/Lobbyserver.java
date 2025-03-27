@@ -1,6 +1,6 @@
 package com.twoweeksmc.lobbyserver;
 
-import de.eztxm.dsm.common.server.manager.ServerManager;
+import com.nexoscript.dsm.common.server.manager.ServerManager;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
 import com.twoweeksmc.lobbyserver.listener.InventoryPreClickListener;
@@ -12,7 +12,7 @@ import com.twoweeksmc.lobbyserver.listener.PlayerSpawnListener;
 import com.twoweeksmc.lobbyserver.listener.PlayerUseItemListener;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
 import com.twoweeksmc.lobbyserver.util.PlayerManager;
-import de.eztxm.config.JsonConfig;
+import de.eztxm.ezlib.config.JsonConfig;
 import java.io.IOException;
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;

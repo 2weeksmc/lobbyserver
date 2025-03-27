@@ -81,7 +81,7 @@
         <dependency>
             <groupId>de.eztxm</groupId>
             <artifactId>ezlib-config-json</artifactId>
-            <version>1.0-ALPHA10</version>
+            <version>1.0-ALPHA11</version>
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>
@@ -99,7 +99,7 @@
             <version>5.2.1</version>
         </dependency>
         <dependency>
-            <groupId>com.twoweeksmc</groupId>
+            <groupId>com.nexoscript</groupId>
             <artifactId>dsm-common</artifactId>
             <version>1.0.0</version>
         </dependency>

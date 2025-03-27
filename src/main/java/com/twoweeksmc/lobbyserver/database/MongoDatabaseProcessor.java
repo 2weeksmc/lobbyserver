@@ -12,7 +12,7 @@ import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
 import com.twoweeksmc.lobbyserver.server.Server;
 
-import de.eztxm.config.JsonConfig;
+import de.eztxm.ezlib.config.JsonConfig;
 
 public class MongoDatabaseProcessor {
     private final JsonConfig databaseConfiguration;
