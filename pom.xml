@@ -93,6 +93,11 @@
             <artifactId>dsm-common</artifactId>
             <version>1.0.0</version>
         </dependency>
+        <dependency>
+            <groupId>com.twoweeksmc</groupId>
+            <artifactId>mongo-connector</artifactId>
+            <version>1.0</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -7,6 +7,8 @@ import com.twoweeksmc.lobbyserver.Lobbyserver;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.server.Server;
 import com.twoweeksmc.lobbyserver.server.ServerTemplate;
+import de.eztxm.ezlib.config.object.JsonObject;
+import org.jetbrains.annotations.NotNull;
 
 public class CreateServerCommand {
     private final JLineConsole console;
@@ -31,9 +33,12 @@ public class CreateServerCommand {
                         console.print("Usage: create server template <template>");
                         return;
                     }
-                    Lobbyserver.getInstance().getDatabaseProcessor().addServer(
+                    Server server = Server.getFromTemplate(ServerTemplate.valueOf(args[2].toUpperCase()));
+                    JsonObject serverObject = getJsonObject(server);
+                    Lobbyserver.getInstance().getMongoConnector().getServerModel().addServer(
                             UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
-                            Server.getFromTemplate(ServerTemplate.valueOf(args[2].toUpperCase())));
+                            serverObject
+                    );
                     return;
                 }
                 if (args[1].equalsIgnoreCase("custom")) {
@@ -44,9 +49,9 @@ public class CreateServerCommand {
                     Server server = new Server(0, Integer.parseInt(args[2]), 0,
                             Integer.parseInt(args[3]),
                             Integer.parseInt(args[4]), new ArrayList<>());
-                    Lobbyserver.getInstance().getDatabaseProcessor().addServer(
+                    Lobbyserver.getInstance().getMongoConnector().getServerModel().addServer(
                             UUID.fromString("a0000a00-a00a-0a00-000a-aa00a000aa0a"),
-                            server);
+                            getJsonObject(server));
                     /*
                      * TODO: ServerManager createServerContainer with generated uniqueId in Lobbyserver while creating server for database.
                      * TODO: Also add get server-info.json file data from created server container.
@@ -61,5 +66,16 @@ public class CreateServerCommand {
                 console.print("Usage: create server <method> <options...>");
             }
         }
+    }
+
+    private static @NotNull JsonObject getJsonObject(Server server) {
+        JsonObject serverObject = new JsonObject();
+        serverObject.set("gemsPrice", String.valueOf(server.getGemsPrice()));
+        serverObject.set("weeks", String.valueOf(server.getWeeks()));
+        serverObject.set("cooldownWeeks", String.valueOf(server.getCooldownWeeks()));
+        serverObject.set("maxPlayers", String.valueOf(server.getMaxPlayers()));
+        serverObject.set("maxMemory", String.valueOf(server.getMaxMemory()));
+        serverObject.set("plugins", String.valueOf(server.getPlugins()));
+        return serverObject;
     }
 }

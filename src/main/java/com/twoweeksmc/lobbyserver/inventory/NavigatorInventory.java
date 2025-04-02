@@ -2,7 +2,7 @@ package com.twoweeksmc.lobbyserver.inventory;
 
 import org.bson.Document;
 
-import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
+import com.twoweeksmc.connector.MongoConnector;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -14,14 +14,14 @@ import net.minestom.server.item.ItemStack;
 import net.minestom.server.item.Material;
 
 public class NavigatorInventory extends Inventory {
-    private final MongoDatabaseProcessor databaseProcessor;
+    private final MongoConnector mongoConnector;
     private final Player player;
 
-    public NavigatorInventory(MongoDatabaseProcessor databaseProcessor, Player player) {
+    public NavigatorInventory(MongoConnector mongoConnector, Player player) {
         super(InventoryType.CHEST_5_ROW, Component.text("Navigator", TextColor.fromHexString("#55bbff")));
-        this.databaseProcessor = databaseProcessor;
+        this.mongoConnector = mongoConnector;
         this.player = player;
-        Document playerData = this.databaseProcessor.getPlayer(this.player.getUuid());
+        Document playerData = this.mongoConnector.getPlayerModel().getPlayer(this.player.getUuid());
         if (playerData.get("last-server-end") != null /* TODO: or timestamp lower than 3 months */) {
             this.setItemStack(22, ItemStack.builder(Material.BARRIER)
                     .customName(Component.text("Server on cooldown", TextColor.fromHexString("#ff2222"))

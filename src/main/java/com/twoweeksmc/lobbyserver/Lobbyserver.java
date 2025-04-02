@@ -1,8 +1,8 @@
 package com.twoweeksmc.lobbyserver;
 
 import com.nexoscript.dsm.common.server.manager.ServerManager;
+import com.twoweeksmc.connector.MongoConnector;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
-import com.twoweeksmc.lobbyserver.database.MongoDatabaseProcessor;
 import com.twoweeksmc.lobbyserver.listener.InventoryPreClickListener;
 import com.twoweeksmc.lobbyserver.listener.ItemDropListener;
 import com.twoweeksmc.lobbyserver.listener.PlayerBlockBreakListener;
@@ -13,7 +13,9 @@ import com.twoweeksmc.lobbyserver.listener.PlayerUseItemListener;
 import com.twoweeksmc.lobbyserver.util.EventRegister;
 import com.twoweeksmc.lobbyserver.util.PlayerManager;
 import de.eztxm.ezlib.config.JsonConfig;
+
 import java.io.IOException;
+
 import net.minestom.server.MinecraftServer;
 import net.minestom.server.event.GlobalEventHandler;
 import net.minestom.server.extras.velocity.VelocityProxy;
@@ -30,7 +32,7 @@ public final class Lobbyserver {
     private final JsonConfig serverConfiguration;
     private final JsonConfig databaseConfiguration;
     private final ServerManager serverManager;
-    private final MongoDatabaseProcessor databaseProcessor;
+    private final MongoConnector mongoConnector;
     private final PlayerManager playerManager;
     private final MinecraftServer minecraftServer;
     private final GlobalEventHandler globalEventHandler;
@@ -39,9 +41,9 @@ public final class Lobbyserver {
 
     public static void main(String[] args) throws IOException {
         Runtime.getRuntime()
-            .addShutdownHook(
-                new Thread(() -> Lobbyserver.getInstance().getDatabaseProcessor().getMongoClient().close())
-            );
+                .addShutdownHook(
+                        new Thread(() -> Lobbyserver.getInstance().getMongoConnector().getMongoClient().close())
+                );
         new Lobbyserver();
     }
 
@@ -53,6 +55,7 @@ public final class Lobbyserver {
         this.serverConfiguration = new JsonConfig(".", "server.json");
         this.serverConfiguration.addDefault("host", "0.0.0.0");
         this.serverConfiguration.addDefault("port", 25590);
+        this.serverConfiguration.addDefault("velocity-secret", "");
         this.console.print("Configured server configuration.");
         this.console.print("Configuring database configuration...");
         this.databaseConfiguration = new JsonConfig(".", "database.json");
@@ -60,11 +63,11 @@ public final class Lobbyserver {
         this.databaseConfiguration.addDefault("database", "database");
         this.console.print("Configured database configuration...");
         this.console.print("Initializing servermanager...");
-        this.serverManager = new ServerManager("2weeksmc-server", 11000, "/home/eztxmmc/2weeksmc/dsm-containers-pub");
+        this.serverManager = new ServerManager("2weeksmc-server", 11000, "C:/2weeksmc/dsm-containers-pub");
         this.serverManager.start();
         this.console.print("Initialized servermanager.");
         this.console.print("Initializing database...");
-        this.databaseProcessor = new MongoDatabaseProcessor(this.databaseConfiguration);
+        this.mongoConnector = new MongoConnector(this.databaseConfiguration);
         this.console.print("Initialized database.");
         this.console.print("Initializing playermanager...");
         this.playerManager = new PlayerManager();
@@ -91,7 +94,7 @@ public final class Lobbyserver {
         this.minecraftServer.start(
                 this.serverConfiguration.get("host").asString(),
                 this.serverConfiguration.get("port").asInteger()
-            );
+        );
         this.console.print("Started lobbyserver.");
         this.console.start();
     }
@@ -99,7 +102,7 @@ public final class Lobbyserver {
     public void registerEvents() {
         EventRegister eventRegister = new EventRegister(this.globalEventHandler);
         eventRegister.register(
-            new PlayerConfigurationListener(this.lobbyInstance, this.databaseProcessor, this.playerManager).listen()
+                new PlayerConfigurationListener(this.lobbyInstance, this.mongoConnector, this.playerManager).listen()
         );
         eventRegister.register(new InventoryPreClickListener(this.playerManager).listen());
         eventRegister.register(new PlayerUseItemListener(this.playerManager).listen());
@@ -109,8 +112,8 @@ public final class Lobbyserver {
         eventRegister.register(new ItemDropListener().listen());
     }
 
-    public MongoDatabaseProcessor getDatabaseProcessor() {
-        return databaseProcessor;
+    public MongoConnector getMongoConnector() {
+        return mongoConnector;
     }
 
     public ServerManager getServerManager() {
