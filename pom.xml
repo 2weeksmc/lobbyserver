@@ -79,9 +79,9 @@
             <version>4.19.0</version>
         </dependency>
         <dependency>
-            <groupId>de.eztxm</groupId>
-            <artifactId>ezlib-config-json</artifactId>
-            <version>1.0-ALPHA11</version>
+            <groupId>de.eztxm.ezlib.config</groupId>
+            <artifactId>json</artifactId>
+            <version>1.0-BETA1.indev5</version>
         </dependency>
         <dependency>
             <groupId>org.jline</groupId>

@@ -70,12 +70,10 @@ public class CreateServerCommand {
 
     private static @NotNull JsonObject getJsonObject(Server server) {
         JsonObject serverObject = new JsonObject();
-        serverObject.set("gemsPrice", String.valueOf(server.getGemsPrice()));
-        serverObject.set("weeks", String.valueOf(server.getWeeks()));
-        serverObject.set("cooldownWeeks", String.valueOf(server.getCooldownWeeks()));
-        serverObject.set("maxPlayers", String.valueOf(server.getMaxPlayers()));
-        serverObject.set("maxMemory", String.valueOf(server.getMaxMemory()));
-        serverObject.set("plugins", String.valueOf(server.getPlugins()));
+        serverObject.put("weeks", server.getWeeks());
+        serverObject.put("max-players", server.getMaxPlayers());
+        serverObject.put("max-memory", server.getMaxMemory());
+        serverObject.put("plugins", server.getPlugins());
         return serverObject;
     }
 }
