@@ -3,6 +3,7 @@ package com.twoweeksmc.lobbyserver.console.command;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import com.nexoscript.dsm.common.server.manager.ServerManager;
 import com.twoweeksmc.lobbyserver.Lobbyserver;
 import com.twoweeksmc.lobbyserver.console.JLineConsole;
 import com.twoweeksmc.lobbyserver.server.Server;
@@ -12,9 +13,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class CreateServerCommand {
     private final JLineConsole console;
+    private final ServerManager serverManager;
 
-    public CreateServerCommand(JLineConsole console) {
+    public CreateServerCommand(JLineConsole console, ServerManager serverManager) {
         this.console = console;
+        this.serverManager = serverManager;
     }
 
     public void execute(String[] args) {
@@ -39,6 +42,11 @@ public class CreateServerCommand {
                             UUID.fromString("b8309d91-e43b-4e17-955d-ca09a056dc7d"),
                             serverObject
                     );
+                    this.serverManager.createServerContainer(
+                            "PURPUR",
+                            "1.21.4",
+                            server.getMaxMemory()
+                    );
                     return;
                 }
                 if (args[1].equalsIgnoreCase("custom")) {
@@ -57,7 +65,11 @@ public class CreateServerCommand {
                      * TODO: Also add get server-info.json file data from created server container.
                      * TODO: Add check if container is existing in the database after creating and the other ways also. If not remove form database/docker.
                      */
-                    Lobbyserver.getInstance().getServerManager().createServerContainer("purpur", "1.21.4");
+                    Lobbyserver.getInstance().getServerManager().createServerContainer(
+                            "purpur",
+                            "1.21.4",
+                            server.getMaxMemory()
+                    );
                     return;
                 }
                 console.print("Usage: create server <method> <options...>");

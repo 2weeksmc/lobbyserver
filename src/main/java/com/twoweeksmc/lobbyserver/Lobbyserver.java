@@ -28,10 +28,10 @@ import net.minestom.server.world.Difficulty;
 public final class Lobbyserver {
 
     private static Lobbyserver instance;
+    private final ServerManager serverManager;
     private final JLineConsole console;
     private final JsonConfig serverConfiguration;
     private final JsonConfig databaseConfiguration;
-    private final ServerManager serverManager;
     private final MongoConnector mongoConnector;
     private final PlayerManager playerManager;
     private final MinecraftServer minecraftServer;
@@ -49,7 +49,9 @@ public final class Lobbyserver {
 
     public Lobbyserver() throws IOException {
         instance = this;
-        this.console = new JLineConsole();
+        this.serverManager = new ServerManager("2weeksmc-server", 11000, "C:/2weeksmc/dsm-containers-pub");
+        this.serverManager.start();
+        this.console = new JLineConsole(this.serverManager);
         this.console.print("Starting Lobbyserver...");
         this.console.print("Configuring server configuration...");
         this.serverConfiguration = new JsonConfig(".", "server.json");
@@ -62,10 +64,6 @@ public final class Lobbyserver {
         this.databaseConfiguration.addDefault("url", "mongodb-url");
         this.databaseConfiguration.addDefault("database", "database");
         this.console.print("Configured database configuration...");
-        this.console.print("Initializing servermanager...");
-        this.serverManager = new ServerManager("2weeksmc-server", 11000, "C:/2weeksmc/dsm-containers-pub");
-        this.serverManager.start();
-        this.console.print("Initialized servermanager.");
         this.console.print("Initializing database...");
         this.mongoConnector = new MongoConnector(this.databaseConfiguration);
         this.console.print("Initialized database.");

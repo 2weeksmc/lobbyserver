@@ -6,6 +6,7 @@ import java.net.UnknownHostException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import com.nexoscript.dsm.common.server.manager.ServerManager;
 import org.jline.reader.EndOfFileException;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -20,10 +21,11 @@ import com.twoweeksmc.lobbyserver.console.command.CreateServerCommand;
 public final class JLineConsole {
     private final Terminal terminal;
     private final LineReaderImpl reader;
+    private final ServerManager serverManager;
 
     private boolean isRunning;
 
-    public JLineConsole() throws IOException {
+    public JLineConsole(ServerManager serverManager) throws IOException {
         this.terminal = TerminalBuilder.builder()
                 .system(true)
                 .jansi(true)
@@ -41,6 +43,7 @@ public final class JLineConsole {
                 .build();
         AttributedString coloredPrefix = new AttributedString(this.userPrefix());
         this.reader.setPrompt(coloredPrefix.toAnsi());
+        this.serverManager = serverManager;
         this.isRunning = true;
         this.clear();
         this.sendWelcomeMessage();
@@ -61,7 +64,7 @@ public final class JLineConsole {
                 switch (command) {
                     case "clear" -> this.clear();
                     case "create" -> {
-                        new CreateServerCommand(this).execute(args);
+                        new CreateServerCommand(this, this.serverManager).execute(args);
                     }
                     case "exit", "stop", "shutdown" -> {
                         this.isRunning = false;
