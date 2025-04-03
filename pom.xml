@@ -58,7 +58,7 @@
     <repositories>
         <repository>
             <id>eztxm-repo</id>
-            <url>https://repo.eztxm.de/maven/</url>
+            <url>https://repo.eztxm.de/maven/snapshots/</url>
         </repository>
     </repositories>
 
@@ -91,7 +91,7 @@
         <dependency>
             <groupId>com.nexoscript</groupId>
             <artifactId>dsm-common</artifactId>
-            <version>1.0.0</version>
+            <version>0.1.0</version>
         </dependency>
         <dependency>
             <groupId>com.twoweeksmc</groupId>
